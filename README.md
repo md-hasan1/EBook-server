@@ -17,7 +17,10 @@ A comprehensive **eBook management and distribution platform** that connects rea
 - [API Routes](#api-routes)
 - [Database](#database)
 - [Deployment](#deployment)
-- [Contributing](#contributing)
+- [Testing the API](#-testing-the-api)
+- [Best Practices](#-best-practices)
+- [Security Features](#-security-features)
+- [Contributing](#-contributing)
 
 ---
 
@@ -231,6 +234,11 @@ vercel.json
 
 The API will be available at `http://localhost:5000` (or your configured port)
 
+**Production API:**
+- **Base URL**: `https://ebook-kappa-dusky.vercel.app/api/v1`
+- **Status**: Live and deployed on Vercel
+- **Live Demo**: https://ebook-kappa-dusky.vercel.app
+
 ---
 
 ## 🔧 Environment Variables
@@ -395,17 +403,35 @@ The database schema is defined in [prisma/schema.prisma](prisma/schema.prisma) a
 
 ## 🚢 Deployment
 
+### Vercel (Production)
+The application is currently deployed on Vercel:
+- **Production URL**: https://ebook-kappa-dusky.vercel.app
+- **API Base URL**: https://ebook-kappa-dusky.vercel.app/api/v1
+- **Status**: ✅ Active and Running
+
+#### Deploy to Vercel
+```bash
+vercel deploy              # Deploy to staging
+vercel deploy --prod       # Deploy to production
+```
+
 ### Docker
 ```bash
 docker-compose up --build
 ```
 
-### Vercel
-```bash
-vercel deploy
-```
+#### Environment Variables Setup
+Before deploying, ensure all environment variables are configured in:
+- **Local Development**: `.env.local` file
+- **Vercel**: Project Settings → Environment Variables
 
-Ensure all environment variables are configured in your deployment platform.
+**Critical Variables for Deployment:**
+- `DATABASE_URL` - PostgreSQL connection string
+- `JWT_SECRET` - Secret key for JWT tokens
+- `FIREBASE_*` - Firebase configuration
+- `TWILIO_*` - Twilio SMS configuration
+- `EMAIL_*` - Email service credentials
+- `AUTH_API_KEY` - API key for authentication (base64 encoded)
 
 ---
 
@@ -459,6 +485,76 @@ For support or questions, please contact: mdhasan26096@gmail.com
 - ✅ Cleaned up environment variable handling
 - ✅ Implemented Twilio and Brevo integration
 - ✅ Added Firebase cloud messaging support
+- ✅ Created comprehensive Postman API collections for all 60+ routes
+- ✅ Added Zod validation schemas for all 10 modules
+- ✅ Fixed ESM/CommonJS compatibility issue with native `fetch` API
+- ✅ Deployed production API on Vercel at https://ebook-kappa-dusky.vercel.app
+- ✅ Generated complete API documentation with validation examples
+
+### Latest Additions
+
+#### Production Deployment
+- **Live API**: https://ebook-kappa-dusky.vercel.app/api/v1
+- **Status**: ✅ Active and running on Vercel
+- **Status Check**: GET https://ebook-kappa-dusky.vercel.app returns `{"success":true,"statusCode":200,"message":"The server is running!"}`
+
+#### Postman Collections
+- **EBook-Server-API.postman_collection.json** - Complete collection with 60+ requests across 10 modules
+- **EBook-Server-Environment.postman_environment.json** - Environment configuration with all necessary variables
+- **POSTMAN_SETUP.md** - Comprehensive setup and usage guide
+
+**Quick Import:**
+1. Open Postman → Import → Select collection JSON file
+2. Settings → Environments → Import environment JSON file
+3. Select "EBook Server Environment" from dropdown
+4. Login via Auth > Login and test all endpoints
+
+#### Validation & Error Handling
+- All routes protected with Zod validation schemas
+- Request body, parameters, and query validation
+- Custom error messages for better debugging
+- Comprehensive error handling with Prisma integration
+
+---
+
+## 🎯 Testing the API
+
+### Quick Start with Postman
+See [POSTMAN_SETUP.md](POSTMAN_SETUP.md) for detailed instructions on importing and using the Postman collection.
+
+### Using cURL
+```bash
+# Check server status
+curl https://ebook-kappa-dusky.vercel.app
+
+# Login
+curl -X POST https://ebook-kappa-dusky.vercel.app/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"password123"}'
+
+# Get all books
+curl -X GET "https://ebook-kappa-dusky.vercel.app/api/v1/books?page=1&limit=10" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Using Node.js/TypeScript
+```typescript
+// Login
+const response = await fetch('https://ebook-kappa-dusky.vercel.app/api/v1/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email: 'user@example.com', password: 'password123' })
+});
+const { data } = await response.json();
+const token = data.accessToken;
+
+// Get books
+const booksResponse = await fetch('https://ebook-kappa-dusky.vercel.app/api/v1/books?page=1&limit=10', {
+  headers: { 'Authorization': `Bearer ${token}` }
+});
+const books = await booksResponse.json();
+console.log(books);
+```
 
 ---
 

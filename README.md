@@ -467,11 +467,6 @@ Before deploying, ensure all environment variables are configured in:
 
 ---
 
-## 📄 License
-
-ISC
-
----
 
 ## 📧 Support
 

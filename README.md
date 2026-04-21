@@ -477,45 +477,6 @@ ISC
 
 For support or questions, please contact: mdhasan26096@gmail.com
 
----
-
-## 🔄 Recent Updates
-
-- ✅ Fixed Git push protection issues by removing secrets from commit history
-- ✅ Cleaned up environment variable handling
-- ✅ Implemented Twilio and Brevo integration
-- ✅ Added Firebase cloud messaging support
-- ✅ Created comprehensive Postman API collections for all 60+ routes
-- ✅ Added Zod validation schemas for all 10 modules
-- ✅ Fixed ESM/CommonJS compatibility issue with native `fetch` API
-- ✅ Deployed production API on Vercel at https://ebook-kappa-dusky.vercel.app
-- ✅ Generated complete API documentation with validation examples
-
-### Latest Additions
-
-#### Production Deployment
-- **Live API**: https://ebook-kappa-dusky.vercel.app/api/v1
-- **Status**: ✅ Active and running on Vercel
-- **Status Check**: GET https://ebook-kappa-dusky.vercel.app returns `{"success":true,"statusCode":200,"message":"The server is running!"}`
-
-#### Postman Collections
-- **EBook-Server-API.postman_collection.json** - Complete collection with 60+ requests across 10 modules
-- **EBook-Server-Environment.postman_environment.json** - Environment configuration with all necessary variables
-- **POSTMAN_SETUP.md** - Comprehensive setup and usage guide
-
-**Quick Import:**
-1. Open Postman → Import → Select collection JSON file
-2. Settings → Environments → Import environment JSON file
-3. Select "EBook Server Environment" from dropdown
-4. Login via Auth > Login and test all endpoints
-
-#### Validation & Error Handling
-- All routes protected with Zod validation schemas
-- Request body, parameters, and query validation
-- Custom error messages for better debugging
-- Comprehensive error handling with Prisma integration
-
----
 
 ## 🎯 Testing the API
 

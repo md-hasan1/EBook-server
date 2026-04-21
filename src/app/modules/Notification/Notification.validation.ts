@@ -1,20 +1,56 @@
 import { z } from 'zod';
 
-const createSchema = z.object({
+const sendNotificationSchema = z.object({
+  body: z.object({
+    userId: z.string({
+      required_error: 'User ID is required',
+    }).optional(),
+    title: z.string({
+      required_error: 'Notification title is required',
+    }).min(1, 'Title is required'),
+    message: z.string({
+      required_error: 'Notification message is required',
+    }).min(1, 'Message is required'),
+    type: z.enum(['info', 'warning', 'error', 'success']).optional(),
+    data: z.object({}).passthrough().optional(),
+  }),
+  params: z.object({
+    userId: z.string().optional(),
+  }).optional(),
+});
 
-    name: z.string().min(1, 'Name is required'),
-    description: z.string().optional(),
-
+const getSingleSchema = z.object({
+  params: z.object({
+    notificationId: z.string({
+      required_error: 'Notification ID is required',
+    }),
+  }),
 });
 
 const updateSchema = z.object({
+  body: z.object({
+    isRead: z.boolean().optional(),
+    title: z.string().optional(),
+    message: z.string().optional(),
+  }),
+  params: z.object({
+    notificationId: z.string({
+      required_error: 'Notification ID is required',
+    }),
+  }),
+});
 
-    name: z.string().optional(),
-    description: z.string().optional(),
-
+const deleteSchema = z.object({
+  params: z.object({
+    notificationId: z.string({
+      required_error: 'Notification ID is required',
+    }),
+  }),
 });
 
 export const NotificationValidation = {
-createSchema,
-updateSchema,
+  sendNotificationSchema,
+  getSingleSchema,
+  updateSchema,
+  deleteSchema,
 };

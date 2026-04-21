@@ -1,0 +1,173 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  fullName     String
+  profileImage String @default("")
+  phoneNumber  String @default("")
+  email        String @default("")
+
+  country        String         @default("")
+  location       String         @default("")
+  expirationOtp  DateTime?
+  isNotification Boolean        @default(true)
+  point          Int            @default(0)
+  purchaseCount  Int            @default(0)
+  otp            Int?
+  password       String?
+  fcmToken       String?
+  role           UserRole       @default(USER)
+  status         UserStatus     @default(INACTIVE)
+  isDeleted      Boolean        @default(false)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  favoritedBy    Favorite[]     @relation("FavoritesByUser")
+  receiver       Notification[] @relation("Receiver")
+  sender         Notification[] @relation("Sender")
+  purchase       Purchase[]
+
+  @@map("Users")
+}
+
+model Book {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  bookName      String
+  writerName    String
+  category      String
+  totalPages    Int?       @default(0)
+  totalSize     String?    @default("0")
+  length        String
+  language      String
+  formate       String
+  publisher     String
+  releaseDate   DateTime
+  price         Float
+  description   String
+  productId     String     @unique
+  isRecommended Boolean    @default(false)
+  coverImage    String
+  file          String
+  isDeleted     Boolean    @default(false)
+  perseCount    Int        @default(0)
+  type          BookType   @default(EBOOK)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  favorite      Favorite[] @relation("book")
+  purchase      Purchase[]
+  redeem        Redeem[]
+  banner        Banner[]
+
+  @@map("books")
+}
+
+model Favorite {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  favoritedById String   @db.ObjectId
+  bookId        String   @db.ObjectId
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  favoritedBy User @relation("FavoritesByUser", fields: [favoritedById], references: [id])
+  book        Book @relation("book", fields: [bookId], references: [id])
+
+  @@map("Favorites")
+}
+
+model Notification {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  receiverId String   @db.ObjectId
+  senderId   String   @db.ObjectId
+  receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
+  sender     User     @relation("Sender", fields: [senderId], references: [id])
+  title      String
+  body       String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("notifications")
+}
+
+model category {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  image     String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
+}
+
+model Banner {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  image     String
+  title     String
+  bookId    String?  @db.ObjectId
+  book      Book?    @relation(fields: [bookId], references: [id])
+  link      String   @default("")
+  creator   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("banners")
+}
+
+model Purchase {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  bookId    String?  @db.ObjectId
+  book      Book?    @relation(fields: [bookId], references: [id])
+  isPin     Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("purchase")
+}
+
+model Point {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  point      Int
+  bookNumber Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("points")
+}
+
+
+model Redeem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  bookId    String   @db.ObjectId
+  book      Book     @relation(fields: [bookId], references: [id])
+  point     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("redeems")
+}
+
+enum BookType {
+  EBOOK
+  AUDIOBOOK
+}
+
+enum UserRole {
+  ADMIN
+  SUPER_ADMIN
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}

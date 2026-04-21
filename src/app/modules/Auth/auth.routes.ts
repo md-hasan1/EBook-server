@@ -11,7 +11,7 @@ const router = express.Router();
 // user login route
 router.post(
   "/login",
-  validateRequest(UserValidation.UserLoginValidationSchema),
+  // validateRequest(UserValidation.UserLoginValidationSchema),
   AuthController.loginUser
 );
 
